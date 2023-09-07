@@ -1,14 +1,13 @@
-import { Handler } from "express";
-import twilio from "twilio";
+
 import * as config from "../config";
 
 import medusa from "../lib/medusa";
 import prisma from "../lib/prisma";
-import * as twilioClient from "../lib/twilio";
+import twilio, * as twilioClient from "../lib/twilio";
 import addToCart from "../utils/addToCart";
 import getCustomerNumber from "../utils/getCustomerNumber";
 
-export const greetUser: Handler = (_, res) => {
+export const greetUser = (_, res) => {
   const response = new twilio.twiml.VoiceResponse();
   const gather = response.gather({
     action: "/ivr/initial",
@@ -16,13 +15,13 @@ export const greetUser: Handler = (_, res) => {
     numDigits: 1,
   });
   gather.say(
-    `Hello and welcome to ${config.STORE_NAME}. If you want to place an order, press 1. or if you want to call a store associate, press 2.`
+    `Hello and welcome to ${config.STORE_NAME}. If you want to place an order, please press 1. or if you want to call a store associate, please press 2.`
   );
 
   res.send(response.toString());
 };
 
-export const initialInteraction: Handler = async (req, res) => {
+export const initialInteraction = async (req, res) => {
   switch (req.body.Digits) {
     // Order
     case "1": {
@@ -107,7 +106,7 @@ export const initialInteraction: Handler = async (req, res) => {
   }
 };
 
-export const orderProduct: Handler = async (req, res) => {
+export const orderProduct = async (req, res) => {
   const { Digits: digits, SpeechResult: speechResult } = req.body;
 
   if (digits == "1") {
@@ -170,7 +169,7 @@ export const orderProduct: Handler = async (req, res) => {
   }
 };
 
-export const pay: Handler = async (req, res) => {
+export const pay = async (req, res) => {
   const userDetails = await prisma.caller.findUnique({
     where: {
       phoneNumber: getCustomerNumber(req.body),
@@ -201,7 +200,7 @@ export const pay: Handler = async (req, res) => {
   res.send(response.toString());
 };
 
-export const paymentComplete: Handler = async (req, res) => {
+export const paymentComplete =  async (req, res) => {
   const userDetails = await prisma.caller.findUnique({
     where: {
       phoneNumber: getCustomerNumber(req.body),

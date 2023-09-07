@@ -71,7 +71,7 @@ router.post("/", async (req, res) => {
 
     await twilioClient.sendSMS(
       req.body.From,
-      "Thank you for providing your shipping address. Now send your email address."
+      "Thank you for providing your shipping address. Please let us know your email address."
     );
 
     res.send();
